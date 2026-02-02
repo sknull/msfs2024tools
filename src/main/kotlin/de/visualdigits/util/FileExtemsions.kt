@@ -1,20 +1,10 @@
 package de.visualdigits.util
 
+import java.io.File
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.File
 
 private val log: Logger = LoggerFactory.getLogger(File::class.java)
-
-fun File.deleteVerbose() {
-    if (isDirectory) {
-        log.info("Deleting directory '${this.canonicalPath}' recursively...")
-        this.deleteRecursively()
-    } else if (isFile) {
-        log.info("Deleting file '${this.canonicalPath}' recursively...")
-        this.delete()
-    }
-}
 
 fun File.copyToIfNotExists(targetFile: File) {
     if (!targetFile.exists()) {

@@ -1,8 +1,8 @@
 package de.visualdigits.msfs2024
 
+import java.io.File
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import java.io.File
 
 @Disabled("Only for local testing")
 class MsfsTest {

@@ -1,10 +1,10 @@
 package de.visualdigits.msfs2024
 
-import org.junit.jupiter.api.Disabled
-import org.junit.jupiter.api.Test
 import java.io.File
 import java.nio.file.Paths
 import kotlin.io.path.ExperimentalPathApi
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 @Disabled("Only for local testing")
 @OptIn(ExperimentalPathApi::class)
@@ -115,7 +115,7 @@ class LayoutTest {
 
                 val textureDirectory = File(liveryDirectory, "texture.$textureName")
                 val textureCfgFile = File(textureDirectory, "texture.cfg")
-                textureCfgFile.writeText(textureCfg.replace("TextureFolder", textureName ?:""))
+                textureCfgFile.writeText(textureCfg.replace("TextureFolder", textureName))
             }
     }
 }

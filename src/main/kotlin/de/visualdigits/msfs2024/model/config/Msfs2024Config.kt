@@ -36,7 +36,7 @@ class Msfs2024Config(
     /** Absolute path to the nvidia texture exporter (needed to convert ktx2 to png), default is 'C:/Program Files/NVIDIA Corporation/NVIDIA Texture Tools/nvtt_export.exe' */
     var nvidiaTextureToolPath: String = "C:/Program Files/NVIDIA Corporation/NVIDIA Texture Tools/nvtt_export.exe",
 
-    /**  */
+    /** List of configured project setups.  */
     var projects: MutableSet<ProjectConfiguration> = mutableSetOf()
 ) {
     companion object {
@@ -56,7 +56,7 @@ class Msfs2024Config(
 
     private val projectConfigurations: Map<String, ProjectConfiguration>
         get() {
-            return projects.associateBy { pc -> pc.name?:error("No project name given") }
+            return projects.associateBy { pc -> pc.name }
         }
 
     fun writeValue(file: File) {

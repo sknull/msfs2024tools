@@ -1,8 +1,6 @@
 package de.visualdigits.msfs2024.main.commands
 
 import de.visualdigits.msfs2024.PngToKtx2Converter
-import de.visualdigits.msfs2024.model.types.TextureType
-import java.io.File
 import kotlinx.cli.ArgType
 import kotlinx.cli.ExperimentalCli
 import kotlinx.cli.Subcommand

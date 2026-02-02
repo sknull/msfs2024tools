@@ -14,6 +14,8 @@ class SetupProjectCommand : Subcommand("setupproject", "Sets up the parameters f
 
     companion object {
 
+        private const val NO_PACKAGE_DIR_GIVEN = "No package dir given"
+
         private const val BATCH_PNG_TO_KTX2_TEMPLATE = "rem Convert png to ktx2 for '\${projectName}'\r\n" +
                 "\r\n\r\n" +
                 "\${deviceLetter}:\r\n" +
@@ -69,15 +71,15 @@ class SetupProjectCommand : Subcommand("setupproject", "Sets up the parameters f
         val configFile = File(currentDir, "msfs2024Tools.json")
         val config = Msfs2024Config.readValue(configFile)
 
-        val packageTextureDir = textureSubPath?.let { tp -> File(packageDir?:error("No package dir given")).resolve(tp) }
-            ?: File(packageDir?:error("No package dir given")).walkTopDown().firstOrNull { it.isDirectory && it.name == "texture" }
+        val packageTextureDir = textureSubPath?.let { tp -> File(packageDir?:error(NO_PACKAGE_DIR_GIVEN)).resolve(tp) }
+            ?: File(packageDir?:error(NO_PACKAGE_DIR_GIVEN)).walkTopDown().firstOrNull { it.isDirectory && it.name == "texture" }
             ?: error("No texture path found")
         check(packageTextureDir.exists()) { "Model texture directory '$modelTexturesDir' does not exist" }
 
         config.projects.add(
             ProjectConfiguration(
                 name = projectName?:error("No project name given"),
-                packageDir = packageDir?:error("No package dir given"),
+                packageDir = packageDir?:error(NO_PACKAGE_DIR_GIVEN),
                 packageTextureDir = packageTextureDir.canonicalPath,
                 modelTexturesDir = modelTexturesDir?:error("No model texture dir given"),
                 textureTypes = textureTypes?.split(",")?.map { tt -> TextureType.valueOf(tt.trim()) }

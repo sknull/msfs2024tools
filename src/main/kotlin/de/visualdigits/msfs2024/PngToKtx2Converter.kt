@@ -1,23 +1,22 @@
 package de.visualdigits.msfs2024
 
-import de.visualdigits.msfs2024.model.types.SimType
-import de.visualdigits.msfs2024.model.types.TextureType
 import de.visualdigits.msfs2024.model.assetpackage.AssetPackage
 import de.visualdigits.msfs2024.model.config.Msfs2024Config
 import de.visualdigits.msfs2024.model.config.ProjectConfiguration
 import de.visualdigits.msfs2024.model.descriptor.BitmapConfiguration
 import de.visualdigits.msfs2024.model.project.Project
+import de.visualdigits.msfs2024.model.types.SimType
+import de.visualdigits.msfs2024.model.types.TextureType
 import de.visualdigits.msfs2024.model.usersettings.UserSettings
 import de.visualdigits.util.WindowsUtils
 import de.visualdigits.util.copyToIfNotExists
 import de.visualdigits.util.createDirectoryIfNotExists
 import de.visualdigits.util.runCommand
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Paths
-import kotlin.collections.forEach
 import kotlin.io.path.absolutePathString
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 object PngToKtx2Converter {
 
@@ -192,16 +191,22 @@ object PngToKtx2Converter {
     }
 
     private fun determineTextureType(textureFile: File): TextureType {
-        return if (textureFile.name.endsWith("_albd.png", ignoreCase = true)) {
-            TextureType.ALBD
-        } else if (textureFile.name.endsWith("_comp.png", ignoreCase = true)) {
-            TextureType.COMP
-        } else if (textureFile.name.endsWith("_decal.png", ignoreCase = true)) {
-            TextureType.DECAL
-        } else if (textureFile.name.endsWith("_norm.png", ignoreCase = true)) {
-            TextureType.NORM
-        } else {
-            error("Unsupoorted texture file: $textureFile")
+        return when {
+            textureFile.name.endsWith("_albd.png", ignoreCase = true) -> {
+                TextureType.ALBD
+            }
+            textureFile.name.endsWith("_comp.png", ignoreCase = true) -> {
+                TextureType.COMP
+            }
+            textureFile.name.endsWith("_decal.png", ignoreCase = true) -> {
+                TextureType.DECAL
+            }
+            textureFile.name.endsWith("_norm.png", ignoreCase = true) -> {
+                TextureType.NORM
+            }
+            else -> {
+                error("Unsupoorted texture file: $textureFile")
+            }
         }
     }
 }

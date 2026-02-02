@@ -33,6 +33,6 @@ class ProjectConfiguration(
     }
 
     override fun hashCode(): Int {
-        return name?.hashCode() ?: 0
+        return name.hashCode()
     }
 }
