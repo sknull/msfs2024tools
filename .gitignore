@@ -1,0 +1,10 @@
+.idea/
+**/target/
+/release/
+lsp/
+*.log
+*.iml
+**/application-local.yml
+**/dependency-reduced-pom.xml
+
+

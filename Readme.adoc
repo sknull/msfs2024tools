@@ -1,0 +1,213 @@
+= Msfs 2024 Tools
+:doctype: article
+:description: Project Documentation for Msfs2024Tools
+:keywords: kotlin, Microsoft Flight Simulator 2024, texture conversion
+:icons: font
+:toc:
+:toc-title: Contents
+:toclevels: 5
+
+== About
+
+image::resources/splash.jpg[]
+
+This tool is meant as a replacement for the https://flightsim.to/file/89937/image-to-ktx2-texture-script-for-msfs-2024-livery-creation-imagetomsfsktx2[MSFS2024 Image Tool] provided on flightsim.to.
+
+The Imagetool is meant to be used by copying images into certain subfolders, executing the script and then grabbing the resulting files from another subfolder and copy them to the desired directory.
+
+As I work on a lot of livery projects this was way to clunky for me, so I decided to implement this tool which can be set up for multiple projects in parallel while automatic the conversion process as possible.
+
+The idea of this tool is to create a setup for a specific livery project and be able to convert back and forth between the image formats as needed.
+
+WARNING: For now there are no safeguards. If you convert textures after having set up your project target files *will* be overwritten. You are resposnible to make backups to avoid using your hard work!
+
+== Project Page
+
+
+
+== Preliminaries
+
+To use this tool you need these tools:
+
+1. https://github.com/HughesMDflyer4/MSFSLayoutGenerator[MSFS Layout Generator] Probably you already have that for usage with the image tool
+1. MSFS 2024 SDK. You can download and install that within the sims developer mode. Probably you already have that also for usage with the image tool.
+1. https://developer.nvidia.com/texture-tools-exporter[NVIDIA texture tools exporter] this is needed to convert the original ktx2 files to png for editing / painting
+
+== Setup
+
+=== General setup
+
+When setting up the tool for the first time you have to do a global configuration.
+First put the exe file somewhere. For this example I will assume you have installed your msfs tools in C:\Applications.
+
+==== Getting help
+
+You can always show the help with:
+
+[source]
+----
+msfs2024tools.exe --help
+msfs2024tools.exe <subcommand> --help
+----
+
+==== Importing an existing image tool userConfig.ini
+
+When you already use the image tool you can leverage from that and import the configuration:
+
+[source]
+----
+c:
+cd C:\Applications
+msfs2024tools.exe setup -i "C:\Applications\ImageToMSFSKTX2"
+----
+
+The setup will import the userConfig.ini found in directory "C:\Applications\ImageToMSFSKTX2" which also
+contains the path to the layout generator.
+
+The nvidia texture exporter installs by default to "C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\nvtt_export.exe" which is the default. If you have installed it anywhere else you may specify it manually:
+
+[source]
+----
+c:
+cd C:\Applications
+msfs2024tools.exe setup -i "C:\Applications\ImageToMSFSKTX2" -n "C:\<wherever>"
+----
+
+==== Manual setup without image tool installed
+
+In the case you have not used the image tool before you have to specify some more options:
+
+[source]
+----
+c:
+cd C:\Applications
+msfs2024tools.exe setup -i "C:\Applications\ImageToMSFSKTX2" -n "C:\<path-to-nvidia-exporter-tool" -l "<path-tolayoutgenerator-tool>" -s "<your-simtype>" -k "<path-to-msfs-sdk>"
+----
+
+
+==== Setup Result
+
+After that you should end up with a msfs2024Tools.json in the same directory which looks like this:
+
+[source, json]
+----
+{
+  "simType" : "MICROSOFT",
+  "sdkRoot" : "C:\\MSFS 2024 SDK",
+  "layoutGeneratorToolPath" : "C:\\Applications\\MSFSLayoutGenerator.exe",
+  "flagHQAlbd" : true,
+  "flagNoAlphaAlbd" : false,
+  "flagHQDecal" : true,
+  "flagNoAlphaDecal" : false,
+  "nvidiaTextureToolPath" : "C:\\Program Files\\NVIDIA Corporation\\NVIDIA Texture Tools\\nvtt_export.exe",
+  "projects" : []
+}
+----
+
+As you can see there are four additional flags. As I found the default settings worked just fine for my projects I have not provided those for the initial setup. Should you want to alter those just edit the json file to your liking.
+
+=== Project Setup
+
+Now that we have done the basic setup we need to set up a project configuration.
+
+For this example I will assume the following directory structure:
+
+[source]
+----
+C:\Applications\MSFS2024
+ |
+ +-- Blender
+ |    +-- BoomXB1
+ |         +-- BoomX1_myLivery
+ |              +-- textures
+ +-- MainLibrary
+ |    +-- BoomXB1
+ |         +-- BoomX1_myLivery
+ |              +-- SimOIbjects
+ |                   +-- Airplanes
+ |                        +-- boomxb1
+ |                             +-- liveries
+ |                                  +-- YourName
+ |                                       +-- boomxb1_yourLivery
+ |                                            +-- texture
+ |                                            +-- thumbnail
+----
+
+Here the Blender directory contains my blender paintkits and the textures subfolder contains my png textures.
+The MainLibrary directory contains the final packages which are linked into the community folder with the addon linker tool.
+
+When we want to setup a configuration for this scenario we issue this on the console (I assume that we do not fiddle with normals and explicit decal textures I have not found in the wild so far - so we get away by just including albedos and composites):
+
+[source]
+----
+msfs2024tools.exe setupproject -n "boomxb1" -p "C:\Applications\MSFS2024\MainLibrary\BoomXB1" -m "C:\Applications\MSFS2024\Blender\BoomXB1\BoomXB1_myLivery\texture" -t "ALBD,COMP"
+----
+
+=== Setup Result
+
+
+After that you should end up with a msfs2024Tools.json in the same directory which looks like this:
+
+[source, json]
+----
+{
+  "simType" : "MICROSOFT",
+  "sdkRoot" : "C:\\MSFS 2024 SDK",
+  "layoutGeneratorToolPath" : "C:\\Applications\\MSFSLayoutGenerator.exe",
+  "flagHQAlbd" : true,
+  "flagNoAlphaAlbd" : false,
+  "flagHQDecal" : true,
+  "flagNoAlphaDecal" : false,
+  "nvidiaTextureToolPath" : "C:\\Program Files\\NVIDIA Corporation\\NVIDIA Texture Tools\\nvtt_export.exe",
+  "projects" : [ {
+    "name" : "boomxb1",
+    "packageDir" : "C:\\Applications\\MSFS2024\\MainLibrary\\BoomXB1\\BoomXB1_myLivery",
+    "packageTextureDir" : "C:\\Applications\\MSFS2024\\MainLibrary\\BoomXB1\\BoomXB1_myLivery\\SimObjects\\Airplanes\\boom-xb1\\liveries\\YourName\\boomxb1_yourLivery\\texture",
+    "modelTexturesDir" : "C:\\Applications\\MSFS2024\\Blender\\BoomXB1\\BoomXB1_myLivery\\texture",
+    "textureTypes" : [ "ALBD", "COMP" ]
+  } ]
+}
+----
+
+Please notice that the setup has detected the texture folder beneath the package root automatically.
+Should you need to specify the folder manually because you have a package with multiple livereies you can do this with specifying option -s. In this case the value must be the realtive path to the package root.
+
+== Usage
+
+Once set up we can now use the given configuration name to convert textures between the two texture directories involved in this project:
+- C:\Applications\MSFS2024\MainLibrary\BoomXB1\BoomXB1_myLivery\SimObjects\Airplanes\boom-xb1\liveries\YourName\boomxb1_yourLivery\texture (containing the ktx2 files)
+- C:\Applications\MSFS2024\Blender\BoomXB1\BoomXB1_myLivery\texture (containing the png files)
+
+You can just issue the following commands on the console or use the batch files which are created along the project configuration (see below).
+
+=== From the Console
+
+==== Convert ktx2 to png
+
+[source]
+----
+msfs2024tools.exe ktx2 -n boomxb1
+----
+
+This will use the nvidia exporter tool to extract the ktx2 files to png format and put them into the paintkit.
+
+==== Convert png to ktx2
+
+[source]
+----
+msfs2024tools.exe png -n boomxb1
+----
+
+This will use the msfs sdk to convert the png files within the paintkit back to ktx2 format.
+During this a msfs instance is launched, then the conversion takes place and after that the additional shell is closed.
+
+WARNING: This only works if the msfs is NOT running already!
+
+=== Using the generated batch files
+
+Along the project setup the tool generates two batch files which can be just double clicked and you do not have to worry about paths, etc:
+
+- <projectname>_Ktx2ToPng.bat
+- <projectname>_PngToKtx2.bat
+
+The result is the same as above - just a bit more convenient.
