@@ -14,10 +14,10 @@
     </fileSet>
   </fileSets-->
   <files>
-    <file>
+    <!--file>
       <source>target/generated-docs/Readme.html</source>
       <outputDirectory></outputDirectory>
-    </file>
+    </file-->
     <file>
       <source>target/msfs2024tools.exe</source>
       <outputDirectory></outputDirectory>

@@ -73,11 +73,6 @@
       <artifactId>logback-classic</artifactId>
       <version>1.5.21</version>
     </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <version>1.5.21</version>
-    </dependency>
 
     <!-- testing -->
     <dependency>
@@ -214,7 +209,7 @@
             <configuration>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>de.visualdigits.msfs2024.main.Main</mainClass>
+                  <mainClass>de.visualdigits.msfs2024tools.main.Main</mainClass>
                 </transformer>
               </transformers>
               <filters> <!-- exclude signed files from the shaded jar to avoid security exception - see also https://zhentao-li.blogspot.com/2012/06/maven-shade-plugin-invalid-signature.html -->
@@ -248,7 +243,7 @@
               <errTitle>${name}</errTitle>
               <icon>resources/MSFS2024.ico</icon>
               <classPath>
-                <mainClass>de.visualdigits.msfs2024.main.Main</mainClass>
+                <mainClass>de.visualdigits.msfs2024tools.main.Main</mainClass>
                 <addDependencies>false</addDependencies>
                 <preCp>anything</preCp>
               </classPath>
