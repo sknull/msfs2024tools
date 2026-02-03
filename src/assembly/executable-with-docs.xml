@@ -6,12 +6,13 @@
   <formats>
     <format>zip</format>
   </formats>
-  <fileSets>
+  <!-- asciidoc plugin causes issues - so commented out for now -->
+  <!--fileSets>
     <fileSet>
       <directory>${basedir}/target/generated-docs/resources</directory>
       <outputDirectory>resources</outputDirectory>
     </fileSet>
-  </fileSets>
+  </fileSets-->
   <files>
     <file>
       <source>target/generated-docs/Readme.html</source>
