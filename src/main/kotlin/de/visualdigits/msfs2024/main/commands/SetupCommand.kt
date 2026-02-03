@@ -1,8 +1,7 @@
 package de.visualdigits.msfs2024.main.commands
 
-import de.visualdigits.msfs2024.model.config.Msfs2024Config
 import de.visualdigits.msfs2024.model.types.SimType
-import java.io.File
+import de.visualdigits.msfs2024.service.SetupService.setupGlobal
 import kotlinx.cli.ArgType
 import kotlinx.cli.ExperimentalCli
 import kotlinx.cli.Subcommand
@@ -51,35 +50,14 @@ class SetupCommand : Subcommand("setup", "Creates or updates the tool configurat
     ).default("C:\\Program Files\\NVIDIA Corporation\\NVIDIA Texture Tools\\nvtt_export.exe")
 
     override fun execute() {
-        val currentDir = System.getProperty("user.dir")
-        val configFile = File(currentDir, "msfs2024Tools.json")
-        val config = Msfs2024Config.readValue(configFile)
-        config.nvidiaTextureToolPath = nvidiaTextureToolPath
+        setupGlobal(
+            imageToMSFSKTX2Path,
+            simType,
+            sdkRoot,
+            layoutGeneratorToolPath,
+            nvidiaTextureToolPath
+        )
 
-        if (imageToMSFSKTX2Path != null && File(imageToMSFSKTX2Path!!).exists()) {
-            val userConfigFile = File(imageToMSFSKTX2Path, "userConfig.ini")
-            if (userConfigFile.exists()) {
-                val valueMap = userConfigFile.readLines()
-                    .associate { l ->
-                        l.split("=").let { ll ->
-                            Pair(ll[0].trim(), ll[1].trim())
-                        }
-                    }.toMutableMap()
-
-                config.simType = (valueMap["SimType"]?.let { st -> SimType.valueOf(st) }) ?: SimType.valueOf(simType)
-                config.sdkRoot = valueMap["sdk_root"] ?: sdkRoot
-                config.layoutGeneratorToolPath = layoutGeneratorToolPath
-                    ?: (valueMap["LG_path"]?.let { f -> File(f, "MSFSLayoutGenerator.exe").canonicalPath })
-                    ?: error("No layout generator path given")
-                config.flagHQAlbd = valueMap["HQ_Flag_Albd"]?.let { v -> v == "ON" } ?: true
-                config.flagNoAlphaAlbd = valueMap["NoAlpha_Flag_Albd"]?.let { v -> v == "ON" } ?: false
-                config.flagHQDecal = valueMap["HQ_Flag_Decal"]?.let { v -> v == "ON" } ?: true
-                config.flagNoAlphaDecal = valueMap["NoAlpha_Flag_Decal"]?.let { v -> v == "ON" } ?: false
-            }
-        } else {
-            log.info("No imageToMSFSKTX2Path given - not importing configuration - using defaults")
-        }
-
-        config.writeValue(configFile)
+        log.info("Set up global parameters successfully")
     }
 }

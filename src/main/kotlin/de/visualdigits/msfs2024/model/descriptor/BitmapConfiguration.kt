@@ -26,7 +26,6 @@ class BitmapConfiguration(
 
     private val mapper = XmlMapper
         .builder()
-//        .enable(SerializationFeature.INDENT_OUTPUT)
         .defaultPropertyInclusion(JsonInclude.Value.construct(JsonInclude.Include.NON_EMPTY, JsonInclude.Include.NON_EMPTY))
         .build()
 

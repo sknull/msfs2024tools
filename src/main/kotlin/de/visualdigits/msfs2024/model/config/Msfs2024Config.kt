@@ -59,6 +59,25 @@ class Msfs2024Config(
             return projects.associateBy { pc -> pc.name }
         }
 
+    fun addProject(
+        projectName: String,
+        packageDir: String,
+        packageTextureDir: File,
+        modelTexturesDir: String,
+        textureTypes: String?
+    ) {
+        projects.add(
+            ProjectConfiguration(
+                name = projectName,
+                packageDir = packageDir,
+                packageTextureDir = packageTextureDir.canonicalPath,
+                modelTexturesDir = modelTexturesDir,
+                textureTypes = textureTypes?.split(",")?.map { tt -> TextureType.valueOf(tt.trim()) }
+                    ?: TextureType.entries
+            )
+        )
+    }
+
     fun writeValue(file: File) {
         mapper.writeValue(file, this)
     }

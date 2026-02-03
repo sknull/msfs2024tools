@@ -1,6 +1,6 @@
 package de.visualdigits.msfs2024.main.commands
 
-import de.visualdigits.msfs2024.Ktx2ToPngConverter
+import de.visualdigits.msfs2024.service.Ktx2ToPngConverter
 import kotlinx.cli.ArgType
 import kotlinx.cli.ExperimentalCli
 import kotlinx.cli.Subcommand

@@ -1,4 +1,4 @@
-package de.visualdigits.msfs2024
+package de.visualdigits.msfs2024.service
 
 import de.visualdigits.msfs2024.model.assetpackage.AssetPackage
 import de.visualdigits.msfs2024.model.config.Msfs2024Config
@@ -33,7 +33,9 @@ object PngToKtx2Converter {
         val currentDir = System.getProperty("user.dir")
         val msfs2024Config = Msfs2024Config.readValue(File(currentDir, "msfs2024Tools.json"))
         val projectConfiguration = msfs2024Config[projectName]?:error("No project configuration found for project '$projectName'")
-        
+        log.info("Converting png texture files in '${projectConfiguration.modelTexturesDir}'")
+        log.info("Using target texture directory: ${projectConfiguration.packageTextureDir}")
+
         val processed = convertPngToKtx2(
             msfs2024Config,
             projectConfiguration
@@ -43,11 +45,10 @@ object PngToKtx2Converter {
                 msfs2024Config,
                 projectConfiguration
             )
+            log.info("Conversion finished.")
         } else {
             log.info("No images converted - not regenerating layout.json")
         }
-
-        log.info("Conversion finished.")
     }
 
     /**
@@ -57,8 +58,6 @@ object PngToKtx2Converter {
         msfs2024Config: Msfs2024Config,
         projectConfiguration: ProjectConfiguration
     ): Boolean {
-        log.info("Converting png texture files in '${projectConfiguration.modelTexturesDir}'")
-        log.info("Using target texture directory: ${projectConfiguration.packageTextureDir}")
 
         val tempDir = File(projectConfiguration.modelTexturesDir, "TempPackage").createDirectoryIfNotExists()
         prepareTempPackage(tempDir)
